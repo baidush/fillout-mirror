@@ -20,13 +20,6 @@ export class AppController {
 
     // Fetch response data
     const response = await this.responseService.fetchDataWithApiKey(id).toPromise();
-    console.log(response.data, 'response.data');
-    response.data.questions = [{
-      id: '4KC356y4M6W8jHPKx9QfEy',
-      name: "Anything else you'd like to share before your call?",
-      type: 'equals',
-      value: '2025-02-22T05:01:47.691Z'
-    }];
     // Filter response data using the provided filters
     const filteredResponses = this.responseService.filterResponses(
       response.data,

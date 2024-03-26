@@ -17,17 +17,24 @@ export class AppController {
   ) {
 
     // Fetch response data
-    const response = await this.responseService.fetchDataWithApiKey(id).toPromise();
-
-    // Parse the filters string to JSON
-    if(!filters) return response.data;
-    const parsedFilters = JSON.parse(filters);
-    // Filter response data using the provided filters
-    const filteredResponses = this.responseService.filterResponses(
-      response.data,
-      parsedFilters,
-    );
-
-    return filteredResponses;
+    try {
+      const response = await this.responseService.fetchDataWithApiKey(id).toPromise();
+    
+      // Parse the filters string to JSON
+      if (!filters) return response.data;
+      const parsedFilters = JSON.parse(filters);
+      
+      // Filter response data using the provided filters
+      const filteredResponses = this.responseService.filterResponses(
+        response.data,
+        parsedFilters,
+      );
+    
+      return filteredResponses;
+    } catch (error) {
+      // Handle errors here
+      console.error('An error occurred:', error);
+      throw new Error('An error occurred while fetching or filtering responses.');
+    }
   }
 }

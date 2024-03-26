@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { AxiosResponse } from 'axios';
 import { HttpService } from '@nestjs/axios';
+import { FilterRequestDto } from './app.controller';
+import { stringify } from 'querystring'; // Import the querystring module
 
 type FilterClauseType = {
   id: string;
@@ -24,9 +26,15 @@ type ResponseType = {
 export class RequestService {
   constructor(private httpService: HttpService) {}
 
-  fetchDataWithApiKey(formId: string): Observable<AxiosResponse<any>> {
+  fetchDataWithApiKey(formId: string, filterRequestDto: FilterRequestDto): Observable<AxiosResponse<any>> {
     const apiKey = 'sk_prod_TfMbARhdgues5AuIosvvdAC9WsA5kXiZlW8HZPaRDlIbCpSpLsXBeZO7dCVZQwHAY3P4VSBPiiC33poZ1tdUj2ljOzdTCCOSpUZ_3912';
-    const apiUrl = `https://api.fillout.com/v1/api/forms/${formId}`;
+    // Convert FilterRequestDto to object with string keys and string values
+    const queryParams: { [key: string]: string | string[] } = {};
+    for (const [key, value] of Object.entries(filterRequestDto)) {
+      queryParams[key] = typeof value === 'string' ? value : JSON.stringify(value);
+    }
+
+    const apiUrl = `https://api.fillout.com/v1/api/forms/${formId}?${stringify(queryParams)}`;
 
     // Set headers with API key
     const headers = {

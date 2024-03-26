@@ -50,10 +50,10 @@ describe('RequestService', () => {
       const axiosResponse: AxiosResponse<any> = { data: responseData, status: 200, statusText: 'OK', headers: {}, config: {} as InternalAxiosRequestConfig<any>};
       httpServiceMock.get.mockReturnValue(of(axiosResponse));
 
-      const result = await service.fetchDataWithApiKey(formId).toPromise();
+      const result = await service.fetchDataWithApiKey(formId, {}).toPromise();
 
       expect(result).toEqual(axiosResponse);
-      expect(httpServiceMock.get).toHaveBeenCalledWith(`https://api.fillout.com/v1/api/forms/${formId}`, { headers: expect.any(Object) });
+      expect(httpServiceMock.get).toHaveBeenCalledWith(`https://api.fillout.com/v1/api/forms/${formId}?`, { headers: expect.any(Object) });
     });
   });
 

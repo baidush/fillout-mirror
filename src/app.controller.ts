@@ -15,12 +15,13 @@ export class AppController {
     @Param('id') id: string,
     @Query('filters') filters: string,
   ) {
-    // Parse the filters string to JSON
-    if(!filters) return 'Filters are required';
-    const parsedFilters = JSON.parse(filters);
 
     // Fetch response data
     const response = await this.responseService.fetchDataWithApiKey(id).toPromise();
+
+    // Parse the filters string to JSON
+    if(!filters) return response.data;
+    const parsedFilters = JSON.parse(filters);
     // Filter response data using the provided filters
     const filteredResponses = this.responseService.filterResponses(
       response.data,

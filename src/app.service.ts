@@ -4,6 +4,7 @@ import { AxiosResponse } from 'axios';
 import { HttpService } from '@nestjs/axios';
 import { FilterRequestDto } from './app.controller';
 import { stringify } from 'querystring'; // Import the querystring module
+import * as dotenv from 'dotenv'; 
 
 type FilterClauseType = {
   id: string;
@@ -24,10 +25,19 @@ type ResponseType = {
 
 @Injectable()
 export class RequestService {
-  constructor(private httpService: HttpService) {}
+  private readonly apiKey: string; // Define apiKey property
+  constructor(private httpService: HttpService) {
+    // Load environment variables from .env file
+    dotenv.config();
+    // Assign API key from environment variables
+    this.apiKey = process.env.API_KEY;
+  }
 
   fetchDataWithApiKey(formId: string, filterRequestDto: FilterRequestDto): Observable<AxiosResponse<any>> {
-    const apiKey = 'sk_prod_TfMbARhdgues5AuIosvvdAC9WsA5kXiZlW8HZPaRDlIbCpSpLsXBeZO7dCVZQwHAY3P4VSBPiiC33poZ1tdUj2ljOzdTCCOSpUZ_3912';
+    // Ensure API key is defined
+    if (!this.apiKey) {
+      throw new Error('API_KEY is not defined in the environment variables');
+    }
     // Convert FilterRequestDto to object with string keys and string values
     const queryParams: { [key: string]: string | string[] } = {};
     for (const [key, value] of Object.entries(filterRequestDto)) {
@@ -39,7 +49,7 @@ export class RequestService {
     // Set headers with API key
     const headers = {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`,
+      'Authorization': `Bearer ${this.apiKey}`,
     };
 
     // Send GET request with headers

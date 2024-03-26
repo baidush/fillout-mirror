@@ -16,6 +16,7 @@ export class AppController {
     @Query('filters') filters: string,
   ) {
     // Parse the filters string to JSON
+    if(!filters) return 'Filters are required';
     const parsedFilters = JSON.parse(filters);
 
     // Fetch response data
